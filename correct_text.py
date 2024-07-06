@@ -20,13 +20,33 @@ def preprocess_text(text):
     :param text: uncorrected text
     :return: corrected text
     """
-    newline_placeholder = "[newline]"
-    text = text.replace("\n\n", newline_placeholder)  # avoid the real newline is replaced with a space
-    text = re.sub(fr'[\s]*{newline_placeholder}[\s]*', f'{newline_placeholder}', text)  # remove any space near newline
-    text = re.sub(r'[\s]+', ' ', text)  # keep only one space (applies to multiple spaces/tabs/newlines)
-    text = text.replace(' ,', ',')  # remove space before comma
+    # Pre-process text
+    text = text.replace(" ,", ",")  # remove space before comma
     text = text.replace(" .", ".")  # remove space before period
-    text = text.replace(newline_placeholder, "\n")  # recover the real newline
+    text = text.replace(". \n", ".\n")  # remove space between period and newline
+    text = text.replace("\n ", "\n")  # remove space after newline
+    text = re.sub(r'[\s]+', ' ', text)
+
+    current_page_text = ""
+    has_new_line = False
+    for ch in text:
+        if ch == '\n':
+            has_new_line = True
+            continue
+        if has_new_line:
+            if 'A' <= ch <= 'Z':  # 前面有换行，当前是大写字母 => 新段落
+                current_page_text += '\n' + ch
+                has_new_line = False
+            elif 'a' <= ch <= 'z':  # 前面有换行，当前是小写字母 => 语义上无需换行
+                current_page_text += " " + ch
+                has_new_line = False
+            elif ch == '\n':  # 连续两个换行
+                continue  # has_new_line仍未True，继续判断下一个字符
+            else:  # 前面有换行，当前字符是数字或其他未知字符
+                current_page_text += '\n' + ch
+                has_new_line = False
+        else:  # 前面没有换行，直接写入当前字符
+            current_page_text += ch
 
     return text
 
@@ -43,10 +63,10 @@ def correct_text_with_openai(text):
             {"role": "system",
              "content": "You are a helpful assistant that only corrects spacing and typographical errors."},
             {"role": "user",
-             "content": f"Do not change the content; only correct spacing and typographical errors for the "
-                        f"following text to improve readability. Return only the corrected results.\n\n{text}"}
+             "content": f"Only fix spacing and typographical errors for the below texts to enhance readability "
+                        f"but do not change the content, return only the results, do not say anything else.\n\n{text}"}
         ],
-        max_tokens=2048,  # the max number of token generated
+        max_tokens=2000,  # the max number of token generated
         temperature=0.0,  # restrict the model to have zero creativity
         top_p=1.0,
         n=1,  # chat round
@@ -56,7 +76,7 @@ def correct_text_with_openai(text):
         # get corrected text
         corrected_text = response.choices[0].message['content'].strip()
     except:  # catch all possible exceptions
-        print("Error occurred during text correction process.")
+        print("Error occurred in OpenAI correcting text process.")
         # return the original text without crushing
         return text
     else:
