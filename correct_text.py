@@ -1,3 +1,4 @@
+import re
 import openai
 import os
 from dotenv import load_dotenv
@@ -13,11 +14,28 @@ openai.api_key = OPENAI_API_KEY
 GPT_MODEL = "gpt-3.5-turbo"  # model name
 
 
-def correct_text(text):
+def preprocess_text(text):
+    """
+    Pre-process the text by removing extra spaces or newline
+    :param text: uncorrected text
+    :return: corrected text
+    """
+    newline_placeholder = "[newline]"
+    text = text.replace("\n\n", newline_placeholder)  # avoid the real newline is replaced with a space
+    text = re.sub(fr'[\s]*{newline_placeholder}[\s]*', f'{newline_placeholder}', text)  # remove any space near newline
+    text = re.sub(r'[\s]+', ' ', text)  # keep only one space (applies to multiple spaces/tabs/newlines)
+    text = text.replace(' ,', ',')  # remove space before comma
+    text = text.replace(" .", ".")  # remove space before period
+    text = text.replace(newline_placeholder, "\n")  # recover the real newline
+
+    return text
+
+
+def correct_text_with_openai(text):
     """
     Call OpenAI API to fix spacing error in the extracted text
     :param text: uncorrected text
-    :return: corrected text
+    :return: corrected text via OpenAI model
     """
     response = openai.ChatCompletion.create(
         model=GPT_MODEL,
