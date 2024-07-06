@@ -12,7 +12,7 @@ def download_pdf(pdf_url):
     """
     Download the pdf file from cloud to local
     :param pdf_url: the url link to the pdf file
-    :return: the temporary local path the downloaded file
+    :return: the temporary local path the downloaded file, the name of pdf file
     """
     try:
         response = requests.get(pdf_url)
@@ -24,8 +24,8 @@ def download_pdf(pdf_url):
         pdf_name = pdf_url.split("/")[-1].split(".")[0]  # only get the filename (avoid extension missing case)
         if not os.path.exists(PDF_TMP_SAVE_PATH):
             os.makedirs(PDF_TMP_SAVE_PATH)
-        file_save_path = f"{PDF_TMP_SAVE_PATH}{pdf_name}"
-        with open(f"{PDF_TMP_SAVE_PATH}/{pdf_name}.pdf", 'wb') as file:
+        file_save_path = f"{PDF_TMP_SAVE_PATH}{pdf_name}.pdf"
+        with open(file_save_path, 'wb') as file:
             file.write(response.content)
     except requests.exceptions.HTTPError as http_err:
         print(f"HTTP error: {http_err}")  # HTTP error
@@ -33,4 +33,4 @@ def download_pdf(pdf_url):
         print(f"Request error: {req_err}")  # other request error
     else:  # return pdf path if succeeded
         print(f"PDF has been saved to {file_save_path}")
-        return file_save_path
+        return file_save_path, pdf_name
