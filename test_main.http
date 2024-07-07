@@ -1,11 +1,11 @@
 # Test your FastAPI endpoints
 
 GET http://127.0.0.1:8000/
-Accept: application/json
+Accept: text/html
 
 ###
 
-GET http://127.0.0.1:8000/hello/Ashley
-Accept: application/json
+GET http://127.0.0.1:8000/https://coursepals-pdfs.s3.us-west-1.amazonaws.com/pdf3.pdf
+Accept: text/plain
 
 ###

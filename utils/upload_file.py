@@ -1,6 +1,6 @@
 from botocore.exceptions import NoCredentialsError
 
-from singleton_clients import S3Client
+from utils.singleton_clients import S3Client
 
 import os
 from dotenv import load_dotenv

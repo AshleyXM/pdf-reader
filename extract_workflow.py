@@ -1,12 +1,10 @@
 import shutil
-import io
 import fitz
 from langchain_community.document_loaders import PyPDFLoader
 
-from retrieve_pdf_from_url import download_pdf
-from generate_image_alt_content import generate_image_alt_content
-from correct_text import preprocess_text
-from correct_text import correct_text_with_openai
+from utils.retrieve_pdf_from_url import download_pdf
+from utils.generate_image_alt_content import generate_image_alt_content
+from utils.correct_text import preprocess_text
 
 import os
 from dotenv import load_dotenv

@@ -1,9 +1,9 @@
 import math
 
-from singleton_clients import AzureCVClient
+from utils.singleton_clients import AzureCVClient
 from azure.cognitiveservices.vision.computervision.models import OperationStatusCodes
 import time
-from upload_file import upload_image
+from utils.upload_file import upload_image
 
 import io
 
