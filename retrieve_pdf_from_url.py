@@ -19,6 +19,8 @@ def download_pdf(pdf_url):
         else, return "Request error"
     """
     status = "success"  # the status of downloading the pdf
+    file_save_path = ""
+    pdf_name = ""
     try:
         response = requests.get(pdf_url)
         # Only support pdf file parsing
@@ -33,12 +35,12 @@ def download_pdf(pdf_url):
             print(f"PDF has been saved to {file_save_path}")
         else:  # not a pdf file
             print("Please make sure the link is a pdf file.")
-            status = "Invalid pdf link"
+            status = "Invalid pdf link, please check again..."
     except requests.exceptions.HTTPError as http_err:
         print(f"HTTP error: {http_err}")  # HTTP error
-        status = "HTTP error"
+        status = "HTTP error during pdf downloading!"
     except requests.exceptions.RequestException as req_err:
         print(f"Request error: {req_err}")  # other request error
-        status = "Request error"
+        status = "Request error during pdf downloading!"
     finally:
         return status, file_save_path, pdf_name
