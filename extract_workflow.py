@@ -63,23 +63,26 @@ def extract_page_from_pdf(pdf_name, pdf_document, page_index, page):
 
 def extract_all_contents_from_pdf(pdf_link):
     # Download the cloud pdf file to local disk
-    local_pdf_file_path, pdf_name = download_pdf(pdf_link)
+    status, local_pdf_file_path, pdf_name = download_pdf(pdf_link)
+    # Check the downloading status
+    if status == "success":
+        # Extract text content from pdf file
+        loader = PyPDFLoader(local_pdf_file_path)
+        pages = loader.load_and_split()
 
-    # Extract text content from pdf file
-    loader = PyPDFLoader(local_pdf_file_path)
-    pages = loader.load_and_split()
+        # Extract images from pdf file
+        pdf_document = fitz.open(local_pdf_file_path)
 
-    # Extract images from pdf file
-    pdf_document = fitz.open(local_pdf_file_path)
+        text_result = ""
 
-    text_result = ""
+        text_result += f"PDF file link: {pdf_link}\n\n"
+        for page_index, page in enumerate(pages, start=1):
+            text_result += extract_page_from_pdf(pdf_name, pdf_document, page_index, page)
+            text_result += "\n\n"  # Add line space between different pages
 
-    text_result += f"PDF file link: {pdf_link}\n\n"
-    for page_index, page in enumerate(pages, start=1):
-        text_result += extract_page_from_pdf(pdf_name, pdf_document, page_index, page)
-        text_result += "\n\n"  # Add line space between different pages
-
-    # Clean up the temporary folder and files
-    # shutil.rmtree(f"{IMG_TMP_SAVE_PATH}/{pdf_name}")
-    print("Extraction succeeded!")
-    return text_result
+        # Clean up the temporary folder and files
+        shutil.rmtree(f"{IMG_TMP_SAVE_PATH}/{pdf_name}")
+        print("Extraction succeeded!")
+        return text_result
+    else:  # downloading pdf failed
+        return status
