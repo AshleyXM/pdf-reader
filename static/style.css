@@ -13,3 +13,7 @@ body {
     font-weight: 500;
     font-size: 16px;
 }
+
+.query-parameter-explanation {
+    padding-left: 40px;
+}
