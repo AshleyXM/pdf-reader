@@ -2,13 +2,9 @@ import asyncio
 import concurrent.futures
 import functools
 import openai
-import os
-from dotenv import load_dotenv
 
-# load env var
-load_dotenv()
-# read environment variables
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+from config.constants import OPENAI_API_KEY
+
 
 # Set OpenAI api key
 openai.api_key = OPENAI_API_KEY
