@@ -1,8 +1,10 @@
-from fastapi import FastAPI, Path, Request
+from fastapi import FastAPI, Path, Request, Query
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from extract_workflow import extract_all_contents_from_pdf
+from utils.extract_workflow import extract_all_contents_from_pdf
+
+import asyncio
 
 app = FastAPI()
 
@@ -19,6 +21,8 @@ async def root(request: Request):
 
 
 @app.get("/{pdf_url:path}", response_class=PlainTextResponse)
-async def parse_pdf(request: Request, pdf_url: str = Path(..., description="The URL of the PDF to process")):
-    parsed_pdf = extract_all_contents_from_pdf(pdf_url)
+def parse_pdf(pdf_url: str = Path(..., description="The URL of the PDF to process"),
+              image: bool = Query(True, description="Whether to enable image extraction"),
+              correct: bool = Query(True, description="Whether to enable text correction")):
+    parsed_pdf = asyncio.run(extract_all_contents_from_pdf(pdf_url, image, correct))
     return parsed_pdf
