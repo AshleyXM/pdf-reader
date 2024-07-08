@@ -1,8 +1,5 @@
 import boto3
 
-from azure.cognitiveservices.vision.computervision import ComputerVisionClient
-from msrest.authentication import CognitiveServicesCredentials
-
 
 class SingletonClientMeta(type):
     _instances = {}
@@ -24,17 +21,6 @@ class S3Client(metaclass=SingletonClientMeta):
             aws_secret_access_key=aws_secret_access_key,
             region_name=aws_region
         )
-
-    def get_client(self):
-        return self.client
-
-
-class AzureCVClient(metaclass=SingletonClientMeta):
-    """
-    Create Singleton Computer Vision client
-    """
-    def __init__(self, endpoint, subscription_key):
-        self.client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(subscription_key))
 
     def get_client(self):
         return self.client
