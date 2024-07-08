@@ -15,8 +15,17 @@
         </div>
         <div class="content">
             <p>
-                [Usage] https://aws_deployment_address/YOUR_PDF_URL
+                [Usage] https://aws_deployment_address/YOUR_PDF_URL[?image=False&correct=False]
             </p>
+            <div class="query-parameter-explanation">
+                Query Parameters (optional)
+            <ul>
+                <li><i>image</i>: whether to enable image extraction</li>
+                <li><i>correct</i>: whether to enable text correction</li>
+            </ul>
+                <span>Both of them default to be True, which means they default to be enabled.</span>
+                <span>If you need to disable any of them, you need to set the corresponding parameter to False.</span>
+            </div>
             <p>
                 [Source code] https://github.com/AshleyXM/pdf-reader
             </p>
