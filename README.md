@@ -1,15 +1,15 @@
-# pdf-reader
+# PDF Reader
 
 ## Introduction
-This project aims to serve as middleware between an original PDF file and being used to construct knowledge base in [dify](https://dify.ai/). However, I hope it has more than that.
+This project aims to serve as middleware between an original PDF file and being used to construct knowledge base in [dify](https://dify.ai/). However, I hope it does more than that.
 
 
 ## Highlights
-- Leveraged Langchain PyPDFLoader to process PDF document in chunks.
-- Utilized OCR to extract text content from PDF file.
-- Stored images into S3 and generated alternative text for images in form of `[image caption](image link)`.
-- Improved the accuracy of text extraction by leveraging LLM to correct spacing and typographical errors by 20%.
-- Optimized the response speed by processing the text correcting and image processing parallelly by 67%.
+- Developed middleware hosted on AWS Lambda using Python FastAPI to facilitate the knowledge base construction from PDF files for customized GPTs in Stanford courses.
+- Stored images in AWS S3 to obtain public links and generated alternative text for images in the format `[image caption](image link)`.
+- Improved text extraction accuracy by 20% by leveraging OpenAI Vision Model to correct spacing and typographical errors.
+- Optimized response speed by 67% with asynchronous processing with text correction and image alternative text generation.
+- Enhanced project robustness and reliability by implementing exception handling and extensive test cases. (still working on)
 
 ## Challenges
 One of the biggest challenges is how to optimize the response speed. 
@@ -26,11 +26,14 @@ By trying so hard to do some optimization, then response speed improved by aroun
 
 ### Feature and Performance Comparison
 
-|                  | PDF Reader                                                                      | Jina Reader                                                    | Amazon Textract                                                                                                                                                                            |
-|------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| response time    | fast (*)                                                                        | very fast                                                      | very fast                                                                                                                                                                                  |
-| response content | Text + Alternative text for all images                                          | Only text content; with a few spacing errors                   | Text + Image                                                                                                                                                                               |
-| Cons             | It takes a little longer time if enabling image extraction and text correction. | No image processing; accuracy of text result is not that good. | Only OCR was used vertically to extract all the content in the PDF file. So content would be totally messed up when the document was not strictly formatted vertically from top to bottom. |
+|                  | PDF Reader                                                                               | Jina Reader                                                                    | Amazon Textract                                                                          |
+|------------------|------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| Response Speed   | Fast (*)                                                                                 | Very Fast                                                                      | Very Fast                                                                                |
+| Response Content | Text + Image                                                                             | Text                                                                           | Text + Image                                                                             |
+| Pros             | Extra features: 1. Image alternative text  2. Text correction                            | The response speed for text extraction is fast and the accuracy is acceptable. | The response contains text and image result and the response speed is fast.              |
+| Cons             | It takes longer response time if enabling image extraction and text correction function. | No image extraction; accuracy of text result is not high enough.               | The content of text and image messed up when they are not arranged strictly vertically . |
+| Local Deployment | ✅                                                                                        | ❌                                                                              | ❌                                                                                        |
+| Open Source      | ✅                                                                                        | 🤔 (Partial)                                                                   | ❌                                                                                        |
 
 Note (*): PDF Reader can reach the same fast speed as Jina Reader if query parameters `image=False` and `correct=False` were set, which disable the two time-consuming features.
 
