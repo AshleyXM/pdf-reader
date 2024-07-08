@@ -1,6 +1,8 @@
 from botocore.exceptions import NoCredentialsError
 
-from utils.singleton_clients import S3Client
+from helper.singleton_clients import S3Client
+
+import asyncio
 
 import os
 from dotenv import load_dotenv
@@ -26,7 +28,7 @@ s3_client = S3Client(
 ).get_client()
 
 
-def upload_image(local_image_path):
+async def upload_image(local_image_path):
     """
     Upload image to AWS S3
     :param local_image_path: path to the file, including the pdf name to which it belongs
@@ -44,9 +46,12 @@ def upload_image(local_image_path):
     bucket_key = pdf_name + "/" + page_number + "/" + image_name  # image path in the bucket
     # print(f"Image bucket_key: {bucket_key}")
     try:
-        # upload the image to S3 image bucket
-        s3_client.upload_file(local_image_path, AWS_IMAGE_BUCKET, bucket_key,
-                              ExtraArgs={'ContentType': f"image/{file_type}", 'ACL': 'public-read'})
+        # upload the image to S3 image bucket (sync method)
+        # s3_client.upload_file(local_image_path, AWS_IMAGE_BUCKET, bucket_key,
+        #                       ExtraArgs={'ContentType': f"image/{file_type}", 'ACL': 'public-read'})
+        # Upload image to S3 asynchronously
+        await asyncio.to_thread(s3_client.upload_file, local_image_path, AWS_IMAGE_BUCKET, bucket_key,
+                                ExtraArgs={'ContentType': f"image/{file_type}", 'ACL': 'public-read'})
     except FileNotFoundError:
         print(f"{local_image_path} not found.")
         return ""
@@ -56,5 +61,10 @@ def upload_image(local_image_path):
     else:
         # return image access URL
         file_url = f"https://{AWS_IMAGE_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{bucket_key}"
-        # print("Image uploaded successfully:", file_url)
         return file_url
+
+
+# Async image uploading method
+async def get_image_link(local_image_path):
+    image_link = await upload_image(local_image_path)
+    return image_link
