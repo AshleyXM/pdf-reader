@@ -1,5 +1,5 @@
 import re
-from helper.openai_helper import async_correct_text_with_openai
+from helpers.openai_helper import async_correct_text_with_openai
 
 # Specify model to use
 GPT_MODEL = "gpt-3.5-turbo"  # model name

@@ -1,7 +1,7 @@
 from botocore.exceptions import NoCredentialsError
 import asyncio
 
-from helper.singleton_clients import S3Client
+from helpers.singleton_clients import S3Client
 from config.constants import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_IMAGE_BUCKET
 
 
