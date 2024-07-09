@@ -17,11 +17,10 @@ async def extract_all_contents_from_pdf(pdf_link, enable_image, enable_correct):
     :param enable_correct: whether to enable text correction
     :return: extracted text
     """
-    print(enable_image, enable_correct)
     # Download the cloud pdf file to local disk
-    status, local_pdf_file_path, pdf_name = download_pdf(pdf_link)
+    download_res_msg, local_pdf_file_path, pdf_name = download_pdf(pdf_link)
     # Check the downloading status
-    if status == "success":
+    if download_res_msg == "success":
         # Collect the async tasks
         image_upload_tasks, image_caption_generating_tasks, text_tasks = \
             collect_async_tasks(local_pdf_file_path, pdf_name, enable_image, enable_correct)
@@ -55,8 +54,6 @@ async def extract_all_contents_from_pdf(pdf_link, enable_image, enable_correct):
         # Clean up the temporary folder and files
         os.remove(f"{PDF_TMP_SAVE_PATH}{pdf_name}.pdf")
         shutil.rmtree(f"{IMG_TMP_SAVE_PATH}/{pdf_name}")
-        print("Extraction succeeded!")
-        return Response(code=200, data=text_result, msg=status)
+        return Response(code=200, data=text_result, msg=download_res_msg)
     else:  # downloading pdf failed
-        return Response(code=400, data="", msg=status)
-
+        return Response(code=400, data="", msg=download_res_msg)

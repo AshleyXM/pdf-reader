@@ -14,11 +14,12 @@ def download_pdf(pdf_url):
         else if issues happened with HTTP, return "HTTP error"
         else, return "Request error"
     """
-    status = "success"  # the status of downloading the pdf
+    msg = "success"  # the status of downloading the pdf
     file_save_path = ""
     pdf_name = ""
     try:
         response = requests.get(pdf_url)
+        response.raise_for_status()  # auto check status code and trigger exception when error
         # Only support pdf file parsing
         if response.headers.get("Content-Type") == "application/pdf":
             response.raise_for_status()  # raise exception if the status code is 4xx or 5xx
@@ -28,15 +29,13 @@ def download_pdf(pdf_url):
             file_save_path = f"{PDF_TMP_SAVE_PATH}{pdf_name}.pdf"
             with open(file_save_path, 'wb') as file:
                 file.write(response.content)
-            print(f"PDF has been saved to {file_save_path}")
         else:  # not a pdf file
-            print("Please make sure the link is a pdf file.")
-            status = "Invalid pdf link, please check again..."
-    except requests.exceptions.HTTPError as http_err:
-        print(f"HTTP error: {http_err}")  # HTTP error
-        status = "HTTP error during pdf downloading!"
-    except requests.exceptions.RequestException as req_err:
-        print(f"Request error: {req_err}")  # other request error
-        status = "Request error during pdf downloading!"
+            msg = f"Invalid pdf link: {pdf_url}"
+    except requests.exceptions.HTTPError as http_err:  # HTTP error
+        msg = f"HTTP error during pdf downloading: {http_err}"
+    except requests.exceptions.RequestException as req_err:  # Request error, like network error
+        msg = f"Request error during pdf downloading: {req_err}"
+    except Exception as err:
+        msg = f"Unknown error during pdf downloading: {err}"
     finally:
-        return status, file_save_path, pdf_name
+        return msg, file_save_path, pdf_name
