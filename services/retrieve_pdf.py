@@ -1,11 +1,7 @@
 import requests
 import os
-from dotenv import load_dotenv
 
-# load env var
-load_dotenv()
-# read pdf temporary save path
-PDF_TMP_SAVE_PATH = os.getenv('PDF_TMP_SAVE_PATH')
+from config.constants import PDF_TMP_SAVE_PATH
 
 
 def download_pdf(pdf_url):

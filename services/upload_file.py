@@ -1,20 +1,8 @@
 from botocore.exceptions import NoCredentialsError
-
-from helper.singleton_clients import S3Client
-
 import asyncio
 
-import os
-from dotenv import load_dotenv
-
-# load env var
-load_dotenv()
-
-# read environment variables
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-AWS_REGION = os.getenv('AWS_REGION')
-AWS_IMAGE_BUCKET = os.getenv('AWS_IMAGE_BUCKET')
+from helper.singleton_clients import S3Client
+from config.constants import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_IMAGE_BUCKET
 
 
 IMAGE_TYPES = ['png', 'jpg', 'jpeg', 'gif', 'tiff', 'webp', "bmp", "svg", "psd"]

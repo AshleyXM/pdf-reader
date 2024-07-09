@@ -1,15 +1,6 @@
 import re
-import openai
-import os
-from dotenv import load_dotenv
+from helper.openai_helper import async_correct_text_with_openai
 
-# load env var
-load_dotenv()
-# read environment variables
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-
-# Set OpenAI api key
-openai.api_key = OPENAI_API_KEY
 # Specify model to use
 GPT_MODEL = "gpt-3.5-turbo"  # model name
 
@@ -34,30 +25,30 @@ def preprocess_text(text):
             has_new_line = True
             continue
         if has_new_line:
-            if 'A' <= ch <= 'Z':  # 前面有换行，当前是大写字母 => 新段落
+            if 'A' <= ch <= 'Z':  # there is newline ahead, current character is cap word => new paragraph
                 current_page_text += '\n' + ch
                 has_new_line = False
-            elif 'a' <= ch <= 'z':  # 前面有换行，当前是小写字母 => 语义上无需换行
+            elif 'a' <= ch <= 'z':  # there is newline ahead, current character is small word => x newline semantically
                 current_page_text += " " + ch
                 has_new_line = False
-            elif ch == '\n':  # 连续两个换行
-                continue  # has_new_line仍未True，继续判断下一个字符
-            else:  # 前面有换行，当前字符是数字或其他未知字符
+            elif ch == '\n':  # two newline in a row
+                continue  # has_new_line=True, continue to check the next character
+            else:  # there is newline ahead, the current character is digit or other unknown character
                 current_page_text += '\n' + ch
                 has_new_line = False
-        else:  # 前面没有换行，直接写入当前字符
+        else:  # no newline before, write the current character
             current_page_text += ch
 
     return text
 
 
-def correct_text_with_openai(text):
+async def correct_text_with_openai(text):
     """
     Call OpenAI API to fix spacing error in the extracted text
     :param text: uncorrected text
     :return: corrected text via OpenAI model
     """
-    response = openai.ChatCompletion.create(
+    response = await async_correct_text_with_openai(
         model=GPT_MODEL,
         messages=[
             {"role": "system",
@@ -74,9 +65,9 @@ def correct_text_with_openai(text):
     )
     try:
         # get corrected text
-        corrected_text = response.choices[0].message['content'].strip()
-    except:  # catch all possible exceptions
-        print("Error occurred in OpenAI correcting text process.")
+        corrected_text = response.choices[0].message.content.strip()
+    except Exception as e:  # catch all possible exceptions
+        print(f"Error occurred in OpenAI correcting text process: {e}")
         # return the original text without crushing
         return text
     else:
