@@ -17,3 +17,7 @@ body {
 .query-parameter-explanation {
     padding-left: 40px;
 }
+
+.warning-note {
+    margin: 5px 0;
+}
