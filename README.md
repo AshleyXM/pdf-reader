@@ -22,7 +22,8 @@ Note (*): PDF Reader can reach the same fast speed as Jina Reader if query param
 
 ### Usage Example
 Local: `http://127.0.0.1:8000/[PDF link]?correct=false&image=false`
-Cloud: `http://[Hosted address]/[PDF link]?correct=false&image=false`
+
+Cloud: `https://[Hosted address]/[PDF link]?correct=false&image=false`
 
 ## Response Fields
 1. `code`: Status code for current request.
@@ -30,7 +31,7 @@ Cloud: `http://[Hosted address]/[PDF link]?correct=false&image=false`
    - `206`: Request partial success, which means part of response can be returned, but some functionality did not work (like image uploading to S3, image caption generation and text correction).
    - `400`: Request error.
 2. `data`: Extracted content from PDF file, by default including corrected text and alternative text for images. It depends on the query parameters and running status of services under the hood.
-3. `msg`: Response message. When all the services ran successfully, it would be "success", otherwise, there would be some explanation message.
+3. `msg`: Response message. If all the services ran successfully, it would be "success", otherwise, there would be message explaining what was going wrong under the hood.
 
 ## How to Set up
 1. Download the repo:
