@@ -3,9 +3,9 @@ import fitz
 import marvin
 import os
 
-from services.process_image import get_caption_with_marvin
-from services.correct_text import *
-from services.upload_file import get_image_link
+from services.images.process_image import get_caption_with_marvin
+from services.texts.correct_text import *
+from services.images.upload_file import get_image_link
 from config.constants import IMG_TMP_SAVE_PATH
 
 
@@ -50,17 +50,8 @@ def collect_page_text_list(page_document):
     return preprocessed_content
 
 
-def collect_async_tasks(local_pdf_file_path, pdf_name, enable_image, enable_correct):
-    """
-    Get asynchronous tasks for uploading images, generating image captions and correcting text
-    :param local_pdf_file_path: local path to the downloaded paf file
-    :param pdf_name: the name of pdf file
-    :param enable_image: whether to enable image extraction
-    :param enable_correct: whether to enable text correction
-    :return: image_upload_tasks, image_caption_generating_tasks, text_correction_tasks
-    """
+def get_text_image_list(local_pdf_file_path, pdf_name):
     # Extract text content from pdf file
-    print(local_pdf_file_path)
     pdf_loader = PyPDFLoader(local_pdf_file_path)
     document_list = pdf_loader.load_and_split()  # load documents and split into chunks
 
@@ -73,25 +64,41 @@ def collect_async_tasks(local_pdf_file_path, pdf_name, enable_image, enable_corr
     for page_index, page_document in enumerate(document_list, start=1):
         text_list.append(collect_page_text_list(page_document))
         current_page_image_path_list = collect_page_image_list(pdf_name, pdf_document, page_index)
-        image_path_list.append(current_page_image_path_list)
+        image_path_list.extend(current_page_image_path_list)
 
-    image_upload_tasks = []
-    image_caption_generating_tasks = []
+    return text_list, image_path_list
+
+
+def collect_text_task(text_list, enable_correct):
     text_tasks = text_list
-
-    if enable_image:
-        # Get asynchronous image uploading tasks
-        image_upload_tasks = [get_image_link(path) for page_path_list in image_path_list for path in page_path_list]
-        # Convert the local image path list into marvin Image path list
-        marvin_image_path_list = [[marvin.Image.from_path(image_path)]
-                                  for page_image_path_list in image_path_list
-                                  for image_path in page_image_path_list]
-        # Get asynchronous image caption generating tasks
-        image_caption_generating_tasks = [get_caption_with_marvin(page_image_path_list)
-                                          for page_image_path_list in marvin_image_path_list]
 
     if enable_correct:
         # Get asynchronous text correction tasks
         text_tasks = [correct_text_with_openai(text) for text in text_list]
 
-    return image_upload_tasks, image_caption_generating_tasks, text_tasks
+    return text_tasks
+
+
+def collect_image_task(image_path_list, enable_image):
+    """
+
+    :param image_path_list: the local image path list
+        Example: [page1_image1, page1_image2, page6_image1, page8_image1, page8_image2]
+    :param enable_image: whether to enable image alternative text function
+    :return:
+    """
+    image_upload_tasks = []
+    image_caption_generating_tasks = []
+
+    if enable_image:
+        # Get asynchronous image uploading tasks
+        image_upload_tasks = [get_image_link(image_path) for image_path in image_path_list]
+
+        # Convert the local image path list into marvin Image path list
+        marvin_image_path_list = [[marvin.Image.from_path(image_path)]
+                                  for image_path in image_path_list]
+        # Get asynchronous image caption generating tasks
+        image_caption_generating_tasks = [get_caption_with_marvin(page_image_path_list)
+                                          for page_image_path_list in marvin_image_path_list]
+
+    return image_upload_tasks, image_caption_generating_tasks

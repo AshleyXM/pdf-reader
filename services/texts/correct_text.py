@@ -1,5 +1,7 @@
 import re
 from helpers.openai_helper import async_correct_text_with_openai
+import openai
+from exceptions.exceptions import OpenAIError
 
 # Specify model to use
 GPT_MODEL = "gpt-3.5-turbo"  # model name
@@ -48,27 +50,27 @@ async def correct_text_with_openai(text):
     :param text: uncorrected text
     :return: corrected text via OpenAI model
     """
-    response = await async_correct_text_with_openai(
-        model=GPT_MODEL,
-        messages=[
-            {"role": "system",
-             "content": "You are a helpful assistant that only corrects spacing and typographical errors."},
-            {"role": "user",
-             "content": f"Only fix spacing and typographical errors for the below texts to enhance readability "
-                        f"but do not change the content, return only the results, do not say anything else.\n\n{text}"}
-        ],
-        max_tokens=2000,  # the max number of token generated
-        temperature=0.0,  # restrict the model to have zero creativity
-        top_p=1.0,
-        n=1,  # chat round
-        stop=None  # no specified stopping condition
-    )
     try:
+        response = await async_correct_text_with_openai(
+            model=GPT_MODEL,
+            messages=[
+                {"role": "system",
+                 "content": "You are a helpful assistant that only corrects spacing and typographical errors."},
+                {"role": "user",
+                 "content": f"Only fix spacing and typographical errors for the below texts to enhance readability "
+                            f"but do not change the content, return only the results, do not say anything else.\n\n{text}"}
+            ],
+            max_tokens=2000,  # the max number of token generated
+            temperature=0.0,  # restrict the model to have zero creativity
+            top_p=1.0,
+            n=1,  # chat round
+            stop=None  # no specified stopping condition
+        )
+
         # get corrected text
         corrected_text = response.choices[0].message.content.strip()
+    except openai.AuthenticationError as openai_auth_error:
+        raise OpenAIError(message=openai_auth_error.message)
     except Exception as e:  # catch all possible exceptions
-        print(f"Error occurred in OpenAI correcting text process: {e}")
-        # return the original text without crushing
-        return text
-    else:
-        return corrected_text
+        raise OpenAIError(message=f"Error occurred in OpenAI correcting text process: {e}")
+    return corrected_text

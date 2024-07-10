@@ -6,18 +6,18 @@ class APIServiceError(Exception):
 
 
 class OpenAIError(APIServiceError):
-    """Raised when the input value is too small."""
+    """Raised when OpenAI service failed."""
     def __init__(self, message="OpenAI service error"):
         super().__init__(message)
 
 
 class MarvinError(APIServiceError):
-    """Raised when the input value is too large."""
+    """Raised when Marvin generating caption service failed."""
     def __init__(self, message="Marvin service error"):
         super().__init__(message)
 
 
 class AWSError(APIServiceError):
-    """Raised when the input value is too large."""
+    """Raised when AWS uploading image service failed."""
     def __init__(self, message="AWS service error"):
         super().__init__(message)

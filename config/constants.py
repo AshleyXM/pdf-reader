@@ -14,3 +14,6 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 IMG_TMP_SAVE_PATH = os.getenv('IMG_TMP_SAVE_PATH')
 PDF_TMP_SAVE_PATH = os.getenv('PDF_TMP_SAVE_PATH')
+
+# request status
+SUCCESS = "success"

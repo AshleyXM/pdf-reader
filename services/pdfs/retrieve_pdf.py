@@ -1,7 +1,7 @@
 import requests
 import os
 
-from config.constants import PDF_TMP_SAVE_PATH
+from config.constants import PDF_TMP_SAVE_PATH, SUCCESS
 
 
 def download_pdf(pdf_url):
@@ -14,12 +14,11 @@ def download_pdf(pdf_url):
         else if issues happened with HTTP, return "HTTP error"
         else, return "Request error"
     """
-    msg = "success"  # the status of downloading the pdf
+    msg = SUCCESS  # the status of downloading the pdf
     file_save_path = ""
     pdf_name = ""
     try:
         response = requests.get(pdf_url)
-        response.raise_for_status()  # auto check status code and trigger exception when error
         # Only support pdf file parsing
         if response.headers.get("Content-Type") == "application/pdf":
             response.raise_for_status()  # raise exception if the status code is 4xx or 5xx

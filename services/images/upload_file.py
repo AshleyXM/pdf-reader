@@ -3,6 +3,7 @@ import asyncio
 
 from helpers.singleton_clients import S3Client
 from config.constants import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_IMAGE_BUCKET
+from exceptions.exceptions import AWSError
 
 
 IMAGE_TYPES = ['png', 'jpg', 'jpeg', 'gif', 'tiff', 'webp', "bmp", "svg", "psd"]
@@ -54,5 +55,8 @@ async def upload_image(local_image_path):
 
 # Async image uploading method
 async def get_image_link(local_image_path):
-    image_link = await upload_image(local_image_path)
+    try:
+        image_link = await upload_image(local_image_path)
+    except Exception as err:
+        raise AWSError(message=f"Error in getting image link: {err}")
     return image_link
