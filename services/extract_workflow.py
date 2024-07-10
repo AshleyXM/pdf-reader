@@ -4,6 +4,7 @@ import asyncio
 from services.pdfs.retrieve_pdf import download_pdf
 from services.images.process_image import combine_alt_text_for_image
 from services.collect_tasks import *
+from services.texts.generate_text import generate_final_text
 from config.constants import PDF_TMP_SAVE_PATH, IMG_TMP_SAVE_PATH, SUCCESS
 from schemas.Response import OKResponse, ErrorResponse
 from exceptions.exceptions import OpenAIError, MarvinError, AWSError
@@ -27,8 +28,7 @@ async def extract_all_contents_from_pdf(pdf_link, enable_image, enable_correct):
             text_list, image_path_list = get_text_image_list(local_pdf_file_path, pdf_name)
             # Collect the async tasks
             text_tasks = collect_text_task(text_list, enable_correct)
-            image_upload_tasks, image_caption_generating_tasks = \
-                collect_image_task(image_path_list, enable_image)
+            image_upload_tasks, image_caption_generating_tasks = collect_image_task(image_path_list, enable_image)
 
             # use the pre-processed text list (make sure assigned when enable_correct=False)
             corrected_text_result = text_list
@@ -51,25 +51,16 @@ async def extract_all_contents_from_pdf(pdf_link, enable_image, enable_correct):
                 try:
                     corrected_text_result = await asyncio.gather(*text_tasks)
                 except OpenAIError as openai_err:
-                    print(openai_err)
                     collect_res_msg = openai_err.message
 
+            # Organize the final result
             text_result = f"PDF file link: {pdf_link}\n\n"
-            if enable_image:  # Check enable_image first to avoid keeping checking this in for loop
+            if enable_image:
                 # Combine the image alternative text per image link result and image caption result
                 image_alt_result = combine_alt_text_for_image(image_link_result, image_caption_result)
-                for idx, text in enumerate(corrected_text_result, start=1):
-                    text_result += f"\nPage{idx}\n"  # add page header
-                    text_result += f"{text}\n"  # add page text content
-                    if idx in image_alt_result:
-                        for alt_txt in image_alt_result[idx]:
-                            text_result += f"{alt_txt}\n"  # add page image alternative text
-                    text_result += "\n"  # add line space between pages
+                text_result += generate_final_text(corrected_text_result, image_alt_result)
             else:
-                for idx, text in enumerate(corrected_text_result, start=1):
-                    text_result += f"\nPage{idx}\n"  # add page header
-                    text_result += f"{text}\n"  # add page text content
-                    text_result += "\n"  # add line space between pages
+                text_result += generate_final_text(corrected_text_result)
 
             # Clean up the temporary folder and files
             os.remove(f"{PDF_TMP_SAVE_PATH}{pdf_name}.pdf")
