@@ -34,33 +34,34 @@ Cloud: `http://[Hosted address]/[PDF link]?correct=false&image=false`
 
 ## How to Set up
 1. Download the repo:
-```bash
-git clone https://github.com/AshleyXM/pdf-reader.git
-```
+   ```bash
+   git clone https://github.com/AshleyXM/pdf-reader.git
+   ```
 2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 3. Apply for some API keys
 
-What you will need:
+   What you will need:
+
    1. AWS Access Key and Secret Access Key
    2. AWS S3 Bucket Name
    3. OpenAI API key
 
-Then, run the below command and replace mine with the keys you applied in `.env` file:
+   Then, run the below command and replace mine with the keys you applied in `.env` file:
 
-```bash
-cp .env.example .env
-```
+   ```bash
+   cp .env.example .env
+   ```
 
 🎉🎉🎉 Congrats! You are good to go now!
 
 ## How to Run
 Run the below command:
-```bash
-uvicorn app.main:app --reload
-```
+   ```bash
+   uvicorn app.main:app --reload
+   ```
 
 Access http://127.0.0.1:8000/ with your browser, and you'll see the home page, which displays some quick guides of the project.
 
