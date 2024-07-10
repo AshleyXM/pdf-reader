@@ -9,9 +9,13 @@ body {
     color: #fff;
 }
 
+.header {
+    font-size: 24px;
+}
+
 .content {
     font-weight: 500;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .query-parameter-explanation {
