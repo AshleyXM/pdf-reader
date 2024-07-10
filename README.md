@@ -3,14 +3,6 @@
 This project aims to serve as middleware between an original PDF file and being used to construct knowledge base in [dify](https://dify.ai/). However, I hope it does more than that.
 
 
-## Highlights
-- Developed middleware hosted on AWS Lambda using Python FastAPI to facilitate the knowledge base construction from PDF files for customized GPTs in Stanford courses.
-- Stored images in AWS S3 to obtain public links and generated alternative text for images in the format `[image caption](image link)`.
-- Improved text extraction accuracy by 20% by leveraging OpenAI Vision Model to correct spacing and typographical errors.
-- Optimized response speed by 67% with asynchronous processing with text correction and image alternative text generation.
-- Enhanced project robustness and reliability by implementing exception handling and extensive test cases. (still working on)
-
-
 ### Feature and Performance Comparison
 
 |                  | PDF Reader                                                                               | Jina Reader                                                                    | Amazon Textract                                                                          |
@@ -24,6 +16,14 @@ This project aims to serve as middleware between an original PDF file and being 
 
 Note (*): PDF Reader can reach the same fast speed as Jina Reader if query parameters `image=False` and `correct=False` were set, which disable the two time-consuming features.
 
+## Request Query Parameters
+- `image`: Decides on whether to enable generating alternative texts for images in PDF files. It defaults to be True. If you don't want this feature, you can set `image=false` or `image=False` (case of bool value does not matter).
+- `correct`: Decides on whether to enable text correction for text in PDF files. By enabling this feature, the text accuracy would improve by 20% by fixing some spacing and typographical errors. However, it would take longer time to process. You can set `correct=false` or `correct=False` to disable it.
+
+### Usage Example
+Local: `http://127.0.0.1:8000/[PDF link]?correct=false&image=false`
+Cloud: `http://[Hosted address]/[PDF link]?correct=false&image=false`
+
 ## Response Fields
 1. `code`: Status code for current request.
    - `200`: Request success.
@@ -33,8 +33,43 @@ Note (*): PDF Reader can reach the same fast speed as Jina Reader if query param
 3. `msg`: Response message. When all the services ran successfully, it would be "success", otherwise, there would be some explanation message.
 
 ## How to Set up
+1. Download the repo:
+```bash
+git clone https://github.com/AshleyXM/pdf-reader.git
+```
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+3. Apply for some API keys
+
+What you will need:
+   1. AWS Access Key and Secret Access Key
+   2. AWS S3 Bucket Name
+   3. OpenAI API key
+
+Then, run the below command and replace mine with the keys you applied in `.env` file:
+
+```bash
+cp .env.example .env
+```
+
+🎉🎉🎉 Congrats! You are good to go now!
 
 ## How to Run
+Run the below command:
+```bash
+uvicorn app.main:app --reload
+```
+
+Access http://127.0.0.1:8000/ with your browser, and you'll see the home page, which displays some quick guides of the project.
+
+## Highlights
+- Developed middleware hosted on AWS Lambda using Python FastAPI to facilitate the knowledge base construction from PDF files for customized GPTs in Stanford courses.
+- Stored images in AWS S3 to obtain public links and generated alternative text for images in the format `[image caption](image link)`.
+- Improved text extraction accuracy by 20% by leveraging OpenAI Vision Model to correct spacing and typographical errors.
+- Optimized response speed by 67% with asynchronous processing with text correction and image alternative text generation.
+- Enhanced project robustness and reliability by implementing exception handling and extensive test cases. (still working on)
 
 
 ## Challenges
