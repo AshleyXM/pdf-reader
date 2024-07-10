@@ -1,6 +1,5 @@
 # PDF Reader
 
-## Introduction
 This project aims to serve as middleware between an original PDF file and being used to construct knowledge base in [dify](https://dify.ai/). However, I hope it does more than that.
 
 
@@ -11,18 +10,6 @@ This project aims to serve as middleware between an original PDF file and being 
 - Optimized response speed by 67% with asynchronous processing with text correction and image alternative text generation.
 - Enhanced project robustness and reliability by implementing exception handling and extensive test cases. (still working on)
 
-## Challenges
-One of the biggest challenges is how to optimize the response speed. 
-
-At first, I just utilized **Azure Computer Vision** to get caption and OCR result of each image and leveraged **OpenAI LLM** `gpt-turbo-3.5` to correct the spacing and typographical errors in text content.
-
-However, as the number of pages in PDF file grows, it takes forever to process one PDF file, since even one API call to OpenAI and Azure CV takes several seconds. So I realized that I need to run these tasks parallelly instead of one by one.
-
-Then here came new problem. Even though OpenAI provides asynchronous support, Azure CV still does not implement it. Therefore, in order to get to improve the response speed. I need to make a tradeoff between abandoning the original plan by adding image processing and figuring out another way to do it.
-
-Fortunately, finally I found [marvin](https://www.askmarvin.ai/docs/vision/captioning/#async-support) toolkit which is based on **OpenAI Vision** and provides pretty good asynchronous support for generating image caption.
-
-By trying so hard to do some optimization, then response speed improved by around 67%, which is pretty satisfying for our current task.
 
 ### Feature and Performance Comparison
 
@@ -48,4 +35,18 @@ Note (*): PDF Reader can reach the same fast speed as Jina Reader if query param
 ## How to Set up
 
 ## How to Run
+
+
+## Challenges
+One of the biggest challenges is how to optimize the response speed. 
+
+At first, I just utilized **Azure Computer Vision** to get caption and OCR result of each image and leveraged **OpenAI LLM** `gpt-turbo-3.5` to correct the spacing and typographical errors in text content.
+
+However, as the number of pages in PDF file grows, it takes forever to process one PDF file, since even one API call to OpenAI and Azure CV takes several seconds. So I realized that I need to run these tasks parallelly instead of one by one.
+
+Then here came new problem. Even though OpenAI provides asynchronous support, Azure CV still does not implement it. Therefore, in order to get to improve the response speed. I need to make a tradeoff between abandoning the original plan by adding image processing and figuring out another way to do it.
+
+Fortunately, finally I found [marvin](https://www.askmarvin.ai/docs/vision/captioning/#async-support) toolkit which is based on **OpenAI Vision** and provides pretty good asynchronous support for generating image caption.
+
+By trying so hard to do some optimization, then response speed improved by around 67%, which is pretty satisfying for our current task.
 
