@@ -29,13 +29,21 @@ By trying so hard to do some optimization, then response speed improved by aroun
 |                  | PDF Reader                                                                               | Jina Reader                                                                    | Amazon Textract                                                                          |
 |------------------|------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
 | Response Speed   | Fast (*)                                                                                 | Very Fast                                                                      | Very Fast                                                                                |
-| Response Content | Text + Image                                                                             | Text                                                                           | Text + Image                                                                             |
+| Response Content | Text + Image (JSON format)                                                               | Text                                                                           | Text + Image                                                                             |
 | Pros             | Extra features: 1. Image alternative text  2. Text correction                            | The response speed for text extraction is fast and the accuracy is acceptable. | The response contains text and image result and the response speed is fast.              |
 | Cons             | It takes longer response time if enabling image extraction and text correction function. | No image extraction; accuracy of text result is not high enough.               | The content of text and image messed up when they are not arranged strictly vertically . |
 | Local Deployment | ✅                                                                                        | ❌                                                                              | ❌                                                                                        |
 | Open Source      | ✅                                                                                        | 🤔 (Partial)                                                                   | ❌                                                                                        |
 
 Note (*): PDF Reader can reach the same fast speed as Jina Reader if query parameters `image=False` and `correct=False` were set, which disable the two time-consuming features.
+
+## Response Fields
+1. `code`: Status code for current request.
+   - `200`: Request success.
+   - `206`: Request partial success, which means part of response can be returned, but some functionality did not work (like image uploading to S3, image caption generation and text correction).
+   - `400`: Request error.
+2. `data`: Extracted content from PDF file, by default including corrected text and alternative text for images. It depends on the query parameters and running status of services under the hood.
+3. `msg`: Response message. When all the services ran successfully, it would be "success", otherwise, there would be some explanation message.
 
 ## How to Set up
 
