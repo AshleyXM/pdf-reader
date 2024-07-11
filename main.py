@@ -2,11 +2,11 @@ from fastapi import FastAPI, Path, Request, Query, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+import asyncio
+from mangum import Mangum
+
 from services.extract_workflow import extract_all_contents_from_pdf
 from helpers.validate_token import verify_token
-from config.constants import SUCCESS
-
-import asyncio
 
 app = FastAPI()
 
@@ -29,3 +29,6 @@ def parse_pdf(pdf_url: str = Path(..., description="The URL of the PDF to proces
               _: str = Depends(verify_token)):
     parsed_result = asyncio.run(extract_all_contents_from_pdf(pdf_url, image, correct))
     return parsed_result
+
+
+handler = Mangum(app)
