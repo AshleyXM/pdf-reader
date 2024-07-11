@@ -1,20 +1,12 @@
 from botocore.exceptions import NoCredentialsError
 import asyncio
 
-from helpers.singleton_clients import S3Client
-from config.constants import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_IMAGE_BUCKET
+from helpers.singleton_clients import AWS_REGION, s3_client
+from config.constants import AWS_IMAGE_BUCKET
 from exceptions.exceptions import AWSError
 
 
 IMAGE_TYPES = ['png', 'jpg', 'jpeg', 'gif', 'tiff', 'webp', "bmp", "svg", "psd"]
-
-
-# Create Singleton S3 client instance
-s3_client = S3Client(
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
-    AWS_REGION
-).get_client()
 
 
 async def upload_image(local_image_path):

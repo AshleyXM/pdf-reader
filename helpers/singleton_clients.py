@@ -1,5 +1,7 @@
 import boto3
 
+from config.constants import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION
+
 
 class SingletonClientMeta(type):
     _instances = {}
@@ -24,3 +26,11 @@ class S3Client(metaclass=SingletonClientMeta):
 
     def get_client(self):
         return self.client
+
+
+# Create Singleton S3 client instance
+s3_client = S3Client(
+    AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY,
+    AWS_REGION
+).get_client()
