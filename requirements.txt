@@ -1,0 +1,11 @@
+boto3==1.28.17
+botocore==1.31.85
+fastapi==0.111.0
+fitz==0.0.1.dev2
+langchain_community==0.2.7
+marvin==2.3.6
+openai==1.35.13
+Pillow==10.4.0
+pydantic==2.8.2
+python-dotenv==1.0.1
+Requests==2.32.3
