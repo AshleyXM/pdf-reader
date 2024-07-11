@@ -8,4 +8,5 @@ openai==1.35.13
 Pillow==10.4.0
 pydantic==2.8.2
 python-dotenv==1.0.1
+python_jose==3.3.0
 Requests==2.32.3
