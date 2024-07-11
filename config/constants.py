@@ -15,5 +15,14 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 IMG_TMP_SAVE_PATH = os.getenv('IMG_TMP_SAVE_PATH')
 PDF_TMP_SAVE_PATH = os.getenv('PDF_TMP_SAVE_PATH')
 
+SECRET_KEY = os.getenv('SECRET_KEY')
+ALGORITHM = os.getenv('ALGORITHM')
+
+# Token related
+TOKEN_FIELD_1 = os.getenv('TOKEN_FIELD_1')
+TOKEN_FIELD_2 = os.getenv('TOKEN_FIELD_2')
+TOKEN_FIELD_1_VAL = os.getenv('TOKEN_FIELD_1_VAL')
+TOKEN_FIELD_2_VAL = os.getenv('TOKEN_FIELD_2_VAL')
+
 # request status
 SUCCESS = "success"
