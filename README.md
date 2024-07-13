@@ -23,7 +23,9 @@ Note (*): PDF Reader can reach the same fast speed as Jina Reader if query param
 ### Usage Example
 Local: `http://127.0.0.1:8000/[PDF link]?correct=false&image=false`
 
-Cloud: `https://[Hosted address]/[PDF link]?correct=false&image=false`
+Cloud: `https://nv27s8zxgi.execute-api.us-west-1.amazonaws.com/prod/[PDF link]?correct=false&image=false`
+
+**Note:** For now, the cloud service is only responded to the requests with specific token in the header, which means the cloud service is still not open yet.
 
 ## Response Fields
 1. `code`: Status code for current request.
@@ -56,7 +58,7 @@ Cloud: `https://[Hosted address]/[PDF link]?correct=false&image=false`
    cp .env.example .env
    ```
 
-🎉🎉🎉 Congrats! You are good to go now!
+🎉🎉🎉 Congrats! You are ready to go now!
 
 ## How to Run
 Run the below command:
@@ -66,6 +68,18 @@ Run the below command:
 
 Access http://127.0.0.1:8000/ with your browser, and you'll see the home page, which displays some quick guides of the project.
 
+## How to Deploy
+
+Basically, what you need to do is the following five steps:
+
+1. Prepare a Dockerfile
+2. Build Docker Image
+3. Push the Image to AWS ECR
+4. Create Lambda Function with ECR Image
+5. Configure API Gateway
+
+You can check out [`deploy-branch`](https://github.com/AshleyXM/pdf-reader/tree/deploy-branch) for more details.
+
 ## Highlights
 - Developed middleware hosted on AWS Lambda using Python FastAPI to facilitate the knowledge base construction from PDF files for customized GPTs in Stanford courses.
 - Stored images in AWS S3 to obtain public links and generated alternative text for images in the format `[image caption](image link)`.
@@ -74,14 +88,15 @@ Access http://127.0.0.1:8000/ with your browser, and you'll see the home page, w
 - Enhanced project robustness and reliability by implementing exception handling and extensive test cases. (still working on)
 
 
-## Challenges
+## Story
+
 One of the biggest challenges is how to optimize the response speed. 
 
-At first, I just utilized **Azure Computer Vision** to get caption and OCR result of each image and leveraged **OpenAI LLM** `gpt-turbo-3.5` to correct the spacing and typographical errors in text content.
+At first, I utilized **Azure Computer Vision** to get caption and OCR result of each image and leveraged **OpenAI LLM** `gpt-turbo-3.5` to correct the spacing and typographical errors in text content.
 
-However, as the number of pages in PDF file grows, it takes forever to process one PDF file, since even one API call to OpenAI and Azure CV takes several seconds. So I realized that I need to run these tasks parallelly instead of one by one.
+However, as the number of pages in PDF file grows, it takes forever to process one PDF file, since even one API call to OpenAI and Azure CV takes several seconds. So I realized that I need to run these tasks asynchronously instead of one by one.
 
-Then here came new problem. Even though OpenAI provides asynchronous support, Azure CV still does not implement it. Therefore, in order to get to improve the response speed. I need to make a tradeoff between abandoning the original plan by adding image processing and figuring out another way to do it.
+Then here came a new problem. Even though OpenAI provides asynchronous support, Azure CV still does not implement it. Therefore, in order to get to improve the response speed. I need to make a tradeoff between abandoning the original plan by adding image processing and figuring out another way to do it.
 
 Fortunately, finally I found [marvin](https://www.askmarvin.ai/docs/vision/captioning/#async-support) toolkit which is based on **OpenAI Vision** and provides pretty good asynchronous support for generating image caption.
 
