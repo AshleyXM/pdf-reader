@@ -1,5 +1,12 @@
 # PDF Reader
 
+All the files (except .gitignore) listed in this branch are needed for deployment. The only thing you need to change is the `.env` file. You need to fill out the values of environment variables with your own API keys or desired values.
+
+Mine is hosted at https://nv27s8zxgi.execute-api.us-west-1.amazonaws.com/prod/. (still working the domain name)
+
+Be aware that the PDF extraction service is not open for the public yet (due to financial and permission issue), which means specific token will be needed for the response of PDF extraction. If you really need this service, you can host it on your own since all the project codes are already open-source.
+
+
 ## How to Deploy
 We are going to deploy this project using [AWS Lambda](https://aws.amazon.com/lambda/), a serverless compute service, which means we don't need to manage servers and clusters, the cloud service provider (CSP, in this case i.e. AWS) manages the infrastructure required to run the code, including provisioning, scaling, and runtime environments.
 
