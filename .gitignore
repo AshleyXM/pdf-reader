@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Local development settings
+.env
+
 # IDE files
 .vscode/
 *.idea/
