@@ -24,5 +24,8 @@ TOKEN_FIELD_2 = os.getenv('TOKEN_FIELD_2')
 TOKEN_FIELD_1_VAL = os.getenv('TOKEN_FIELD_1_VAL')
 TOKEN_FIELD_2_VAL = os.getenv('TOKEN_FIELD_2_VAL')
 
+# Working directory in lambda function
+LAMBDA_TASK_ROOT = os.getenv('LAMBDA_TASK_ROOT')
+
 # request status
 SUCCESS = "success"

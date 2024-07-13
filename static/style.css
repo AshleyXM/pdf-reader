@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background-image: url('/static/images/home_background.png');
+    background-image: url("https://coursepals-images.s3.us-west-1.amazonaws.com/home_background.png");
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;

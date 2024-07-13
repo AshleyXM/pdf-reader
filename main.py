@@ -3,15 +3,17 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import asyncio
+import os
 from mangum import Mangum
 
 from services.extract_workflow import extract_all_contents_from_pdf
 from helpers.validate_token import verify_token
+from config.constants import LAMBDA_TASK_ROOT
 
 app = FastAPI()
 
 # Mount the static files directory
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount(f"/static", StaticFiles(directory=os.path.join(LAMBDA_TASK_ROOT, "static")), name="static")
 
 # Set up Jinja2 templates
 templates = Jinja2Templates(directory="templates")
