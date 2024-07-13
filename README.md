@@ -62,9 +62,9 @@ Cloud: `https://nv27s8zxgi.execute-api.us-west-1.amazonaws.com/prod/[PDF link]?c
 
 ## How to Run
 Run the below command:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
+```bash
+uvicorn app.main:app --reload
+```
 
 Access http://127.0.0.1:8000/ with your browser, and you'll see the home page, which displays some quick guides of the project.
 
@@ -85,10 +85,10 @@ You can check out [`deploy-branch`](https://github.com/AshleyXM/pdf-reader/tree/
 - Stored images in AWS S3 to obtain public links and generated alternative text for images in the format `[image caption](image link)`.
 - Improved text extraction accuracy by 20% by leveraging OpenAI Vision Model to correct spacing and typographical errors.
 - Optimized response speed by 67% with asynchronous processing with text correction and image alternative text generation.
-- Enhanced project robustness and reliability by implementing exception handling and extensive test cases. (still working on)
+- Enhanced project robustness and reliability by implementing exception handling and extensive test cases.
 
 
-## Story
+## Challenges
 
 One of the biggest challenges is how to optimize the response speed. 
 
