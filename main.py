@@ -12,8 +12,8 @@ from config.constants import LAMBDA_TASK_ROOT
 
 app = FastAPI()
 
-# Mount the static files directory
-app.mount(f"/static", StaticFiles(directory=os.path.join(LAMBDA_TASK_ROOT, "static")), name="static")
+# Mount the static directory to root
+app.mount("/static", StaticFiles(directory=os.path.join(LAMBDA_TASK_ROOT, "static")), name="static")
 
 # Set up Jinja2 templates
 templates = Jinja2Templates(directory="templates")
