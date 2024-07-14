@@ -88,7 +88,9 @@ You can check out [`deploy-branch`](https://github.com/AshleyXM/pdf-reader/tree/
 - Enhanced project robustness and reliability by implementing exception handling and extensive test cases.
 
 
-## Challenges
+## Challenges Under the Hood
+
+### Response Speed Optimization
 
 One of the biggest challenges is how to optimize the response speed. 
 
@@ -96,9 +98,20 @@ At first, I utilized **Azure Computer Vision** to get caption and OCR result of 
 
 However, as the number of pages in PDF file grows, it takes forever to process one PDF file, since even one API call to OpenAI and Azure CV takes several seconds. So I realized that I need to run these tasks asynchronously instead of one by one.
 
-Then here came a new problem. Even though OpenAI provides asynchronous support, Azure CV still does not implement it. Therefore, in order to get to improve the response speed. I need to make a tradeoff between abandoning the original plan by adding image processing and figuring out another way to do it.
+Then here came a new problem. Even though OpenAI provides asynchronous support, Azure CV still does not implement it yet. Therefore, in order to get to improve the response speed. I need to make a tradeoff between abandoning the original plan by adding image processing and figuring out another way to do it.
 
-Fortunately, finally I found [marvin](https://www.askmarvin.ai/docs/vision/captioning/#async-support) toolkit which is based on **OpenAI Vision** and provides pretty good asynchronous support for generating image caption.
+Fortunately, finally I found [marvin](https://www.askmarvin.ai/docs/vision/captioning/#async-support) toolkit, which is based on **OpenAI Vision** and provides pretty good asynchronous support for generating image caption, to resolve this problem.
 
 By trying so hard to do some optimization, then response speed improved by around 67%, which is pretty satisfying for our current task.
 
+### Deployment
+
+At first, I followed some tutorials of how to deploy FastAPI project to AWS Lambda. However, the dependency package size of this project is pretty big, even I tried to split them into several more layers, it was still hard to manage the dependencies with AWS layers. So I started to create lambda function with container image. Although fortunately it worked pretty smoothly to do it with docker image being pushed to ECR repository, and created lambda function with this docker image, something else always happened at this time.
+
+All the functionalities except uploading the images to S3 bucket works perfect. At first from the message `An error occurred (InvalidAccessKeyId) when calling the PutObject operation: The AWS Access Key Id you provided does not exist in our records.` returned from lambda function, I can tell something went wrong with the access key. Therefore, I tried to re-generate access key and secret access key and replaced with the new generated keys. Still not working...
+
+Then from a [Stack Overflow comment](https://stackoverflow.com/questions/39051477/the-aws-access-key-id-does-not-exist-in-our-records/71636705), I got to know that I need to change some configuration for project needed to be deployed on AWS Lambda. So I removed the access key, secret access key and region while creating the S3 client. After doing this, the error message changed to `An error occurred (AccessDenied) when calling the PutObject operation: Access Denied`. Alright, it seemed like I got a little closer to success because this error message looked like it was just the permission issue.
+
+Unfortunately, I spent a day troubleshooting this problem. I tried to add S3 full access permission to the lambda function, to the IAM user I was using to operate, to the S3 bucket...Still got code `206` from my project, which means the image uploading function did not work.
+
+At last, I tried to organize the thought of how the whole system works, like which part needs which part's permission, and who granted this permission. I suddenly got an idea that I should have granted the S3FullAccess to the role who is actually executing the lambda function instead of the IAM user I am using. Finally, the whole system works out. I got to say it is truly kind of tricky to play with AWS permissions😟.
