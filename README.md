@@ -12,7 +12,7 @@ We are going to deploy this project using [AWS Lambda](https://aws.amazon.com/la
 
 Since the project's dependency package size exceeds the AWS Lambda layer limit, complicating dependency management with AWS Layers, we will use a container image to build the Lambda function.
 
-### Prepare a Dockerfile
+### 1. Prepare a Dockerfile
  ```dockerfile
  # Use an official Python runtime as a base image
  FROM public.ecr.aws/lambda/python:3.10
@@ -32,11 +32,11 @@ Since the project's dependency package size exceeds the AWS Lambda layer limit, 
 - `LAMBDA_TASK_ROOT` is pre-defined environment variable of [AWS base image for Python 3.10](https://github.com/aws/aws-lambda-base-images/blob/python3.10/Dockerfile.python3.10).
 
 
-### Build Docker Image
+### 2. Build Docker Image
  ```bash
  docker build -t pdf-extraction-service .
  ```
-### Push the Image to AWS ECR
+### 3. Push the Image to AWS ECR
 
 While in this step, please create an ECR repository before you start. Record the repo name because you are going to use it for tagging the image and pushing the image to this repo.
 
@@ -54,10 +54,12 @@ aws ecr get-login-password --region <region> | docker login --username AWS --pas
  ```bash
  docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/<ecr-repo-name>:latest
  ```
-### Create Lambda Function with ECR Image
+### 4. Create Lambda Function with ECR Image
 
 Create a lambda function with "Container image" in the top, and entered the ECR image URI built in step 3.
 
-### Configure API Gateway
+**In this step, in order to make sure the lambda function can have access to put object into S3 bucket, you need to add `AmazonS3FullAccess` permission to the execution role of the lambda function.**
+
+### 5. Configure API Gateway
 
 In order to make your lambda function accessibly with HTTP, you can create Rest API with API Gateway. You can check out [AWS API Gateway REST APIS](https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-develop.html) and follow the steps to implement this.
