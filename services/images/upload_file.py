@@ -1,8 +1,8 @@
 from botocore.exceptions import NoCredentialsError
 import asyncio
 
-from helpers.singleton_clients import AWS_REGION, s3_client
-from config.constants import AWS_IMAGE_BUCKET
+from helpers.singleton_clients import s3_client
+from config.constants import AWS_REGION, AWS_IMAGE_BUCKET
 from exceptions.exceptions import AWSError
 
 
