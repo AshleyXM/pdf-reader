@@ -3,7 +3,18 @@
 This project aims to serve as middleware between an original PDF file and being used to construct knowledge base in [dify](https://dify.ai/). However, I hope it does more than that.
 
 
-### Feature and Performance Comparison
+## Demo
+
+Test PDF file:
+
+https://coursepals-pdfs.s3.us-west-1.amazonaws.com/test1.pdf
+
+![Effect w/o image and correction](https://github.com/AshleyXM/pdf-reader/blob/deploy-branch/demo/test1.png)
+
+![Effect w/ image and correction](https://github.com/AshleyXM/pdf-reader/blob/deploy-branch/demo/test1_plus.png)
+
+
+## Feature and Performance Comparison
 
 |                  | PDF Reader                                                                               | Jina Reader                                                                    | Amazon Textract                                                                          |
 |------------------|------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
