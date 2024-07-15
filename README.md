@@ -5,13 +5,11 @@ This project aims to serve as middleware between an original PDF file and being 
 
 ## Demo
 
-Test PDF file:
+Test PDF file link: https://coursepals-pdfs.s3.us-west-1.amazonaws.com/test1.pdf
 
-https://coursepals-pdfs.s3.us-west-1.amazonaws.com/test1.pdf
+![Effect w/o image and correction](https://github.com/AshleyXM/pdf-reader/blob/main/demo/test1.png)
 
-![Effect w/o image and correction](https://github.com/AshleyXM/pdf-reader/blob/deploy-branch/demo/test1.png)
-
-![Effect w/ image and correction](https://github.com/AshleyXM/pdf-reader/blob/deploy-branch/demo/test1_plus.png)
+![Effect w/ image and correction](https://github.com/AshleyXM/pdf-reader/blob/main/demo/test1_plus.png)
 
 
 ## Feature and Performance Comparison
